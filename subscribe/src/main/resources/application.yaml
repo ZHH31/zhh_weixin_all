@@ -27,4 +27,4 @@ spring:
 # Was at begin of line:24 :# Was at begin of line:21 :# ----------------
 # Was at begin of line:25 :# Was at begin of line:22 :# Was at begin of line:19 :# 如果多个人使用一台服务器，自然要使用不同的端口！
 # Was at begin of line:26 :# Was at begin of line:23 :# Was at begin of line:20 :# 删除WEB功能，就不需要server.port参数
-# Was at begin of line:27 :# Was at begin of line:24 :# Was at begin of line:21 :#server.port: 8077
+# Was at begin of line:27 :# Was at begin of line:24 :# Was at begin of line:21 :#server.port: 8089
