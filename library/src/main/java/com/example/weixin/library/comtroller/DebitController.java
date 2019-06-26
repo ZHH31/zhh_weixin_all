@@ -28,7 +28,6 @@ public class DebitController {
 		// 必须要保证list不能为null
 		if (list == null) {
 			list = new DebitList();
-			// 把新建的list放入Session里面
 			request.setAttribute("debitList", list, WebRequest.SCOPE_SESSION);
 		}
 
