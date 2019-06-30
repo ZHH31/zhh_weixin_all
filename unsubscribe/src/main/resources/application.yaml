@@ -16,7 +16,6 @@ spring:
       port: 6379
       database: 15
 # 修改运行时的端口号，因为一个端口号只能被一个人使用。
-server.port: 8094
 # ----------------
 # Orphan comments:
 # ----------------
