@@ -10,7 +10,6 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "lib_book")
 public class Book {
-
 	@Id
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
 	@GeneratedValue(generator = "uuid2")

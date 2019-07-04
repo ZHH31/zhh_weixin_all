@@ -32,19 +32,15 @@ public class SelfMenuServiceImpl implements SelfMenuService {
 	public SelfMenu getMenu() {
 		List<SelfMenu> all = menuRepository.findAll();
 		if (all.isEmpty()) {
-			// 数据库如果没有数据，则返回一个新的空对象
 			return new SelfMenu();
 		}
-		// 数据库有数据，则返回第一条数据
 		return all.get(0);
 	}
 
 	@Override
 	public void saveMenu(SelfMenu selfMenu) {
-		// 1.如果有二级菜单，那么一级菜单只能有name属性，其他属性不要
 		selfMenu.getSubMenus().forEach(b1 -> {
 			if (!b1.getSubMenus().isEmpty()) {
-				// 有下一级，只保留name属性，其他属性都清空
 				b1.setAppId(null);
 				b1.setKey(null);
 				b1.setMediaId(null);
@@ -54,11 +50,9 @@ public class SelfMenuServiceImpl implements SelfMenuService {
 			}
 		});
 
-		// 2.删除原本所有的自定义菜单，然后重新插入数据
 		this.menuRepository.deleteAll();
 		this.menuRepository.save(selfMenu);
 
-		// 3.把数据转换为JSON，发送给微信公众号平台
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode buttonNode = mapper.createObjectNode();
 		ArrayNode buttonArrayNode = mapper.createArrayNode();
@@ -68,16 +62,13 @@ public class SelfMenuServiceImpl implements SelfMenuService {
 
 			ObjectNode menu = mapper.createObjectNode();
 			menu.put("name", b1.getName());
-			buttonArrayNode.add(menu);// 加入到集合里面
+			buttonArrayNode.add(menu);
 			if (b1.getSubMenus().isEmpty()) {
-				// 没有下一级，就需要把key、appid之类的属性加上
 				setValues(menu, b1);
 			} else {
-				// 有下一级，就需要再创建ArrayNode
 				ArrayNode subButtons = mapper.createArrayNode();
 				menu.set("sub_button", subButtons);
 				b1.getSubMenus().forEach(b2 -> {
-					// 需要把key、appid之类的属性加上
 					ObjectNode subMenu = mapper.createObjectNode();
 					subMenu.put("name", b2.getName());
 					subButtons.add(subMenu);
@@ -89,7 +80,6 @@ public class SelfMenuServiceImpl implements SelfMenuService {
 		try {
 			String json = mapper.writeValueAsString(buttonNode);
 
-			// 调用远程接口，把JSON字符串推送到微信公众号平台
 			this.weixinProxy.saveMenu(json);
 		} catch (JsonProcessingException e) {
 			LOG.error("保存菜单出现问题：" + e.getLocalizedMessage(), e);
@@ -101,10 +91,9 @@ public class SelfMenuServiceImpl implements SelfMenuService {
 			subMenu.put("appid", m.getAppId());
 		}
 
-		// 有些可以有key，有些则不能有key
-		if ((m.getType().equals("location_select")// 定位
-				|| m.getType().equals("pic_weixin")// 微信相册
-				|| m.getType().equals("pic_photo_or_album")// 微信相册或拍照
+		if ((m.getType().equals("location_select")//地理定位
+				|| m.getType().equals("pic_weixin")// 手机相册
+				|| m.getType().equals("pic_photo_or_album")// 手机相册或拍照
 				|| m.getType().equals("pic_sysphoto")// 拍照
 				|| m.getType().equals("scancode_push")// 扫码
 				|| m.getType().equals("scancode_waitmsg")// 扫码
